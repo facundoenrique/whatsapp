@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @Slf4j
@@ -18,21 +20,24 @@ public class GroupsService {
 
     public ResponseEntity save(Message message){
 
-        //chequeo que el usuario pertenezca al grupo
-//        Object check = groupsRepository.checkUser(message.getUserId(),message.getGroupId());
-//        if (Objects.isNull(check)){
-//            throw new SecurityException();
-//        }
-
         Message result = groupsRepository.save(message);
         sendNotification(result);
-
 
         return new ResponseEntity(result, HttpStatus.CREATED);
     }
 
+    public List<Long> getUserGroups(Long groupId){
+        return groupsRepository.getUserGroups(groupId);
+    }
+
     private void sendNotification(Message message){
 
+        /*
+          * Debería ser algún proceso asincrono, utilizando alguna cola tipo rabbitMQ, Kafka
+         */
+        getUserGroups(message.getGroupId()).forEach(
+                id -> log.info("Se envía notificación al usuario con id: "+id)
+        );
     }
 
 }

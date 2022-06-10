@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface GroupsRepositoryMyBatis {
 
@@ -14,4 +16,7 @@ public interface GroupsRepositoryMyBatis {
 
     @Select("SELECT * FROM group_users WHERE user_id = #{xUserId} AND group_id=#{xGroupId}")
     Object checkUser(@Param("xUserId") Long xUserId, @Param("xGroupId") Long xGroupId);
+
+    @Select("SELECT user_id FROM group_users WHERE group_id=#{xGroupId}")
+    List<Long> getUserGroups(Long groupId);
 }

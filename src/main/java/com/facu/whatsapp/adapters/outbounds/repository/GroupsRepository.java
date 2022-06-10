@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -21,4 +22,5 @@ public class GroupsRepository {
         return groupsRepositoryMyBatis.checkUser(userId,groupId);
     }
 
+    public List<Long> getUserGroups(Long groupId){ return groupsRepositoryMyBatis.getUserGroups(groupId);}
 }
