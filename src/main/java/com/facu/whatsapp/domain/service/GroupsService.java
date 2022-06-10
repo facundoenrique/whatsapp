@@ -33,7 +33,6 @@ public class GroupsService {
 
     private void sendNotification(Message message){
 
-
         List<Long> ids = getUserGroups(message.getGroupId());
         if (CollectionUtils.isEmpty(ids)){
             new Exception("Error al obtener los ids para enviar las notificaciones");
