@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -32,10 +33,16 @@ public class GroupsService {
 
     private void sendNotification(Message message){
 
+
+        List<Long> ids = getUserGroups(message.getGroupId());
+        if (CollectionUtils.isEmpty(ids)){
+            new Exception("Error al obtener los ids para enviar las notificaciones");
+        }
+
         /*
-          * Debería ser algún proceso asincrono, utilizando alguna cola tipo rabbitMQ, Kafka
+         * Debería ser algún proceso asincrono, utilizando alguna cola tipo rabbitMQ, Kafka
          */
-        getUserGroups(message.getGroupId()).forEach(
+        ids.forEach(
                 id -> log.info("Se envía notificación al usuario con id: "+id)
         );
     }
