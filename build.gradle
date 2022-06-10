@@ -1,0 +1,89 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.0'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'jacoco'
+    id 'info.solidsoft.pitest' version '1.7.0'
+    id 'maven-publish'
+}
+
+group = 'com.facu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('mybatisVersion', '2.2.0')
+    set('springCloudVersion', "2020.0.3")
+    set('springFoxVer', '3.0.0')
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation "io.springfox:springfox-swagger2:$springFoxVer"
+    implementation('io.springfox:springfox-swagger-ui:2.8.0')
+
+
+}
+
+
+
+dependencyManagement {
+    imports { mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+
+springBoot {
+    buildInfo()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task unitTest(type: Test) {
+    useJUnitPlatform {
+        excludeTags 'integration-test'
+    }
+}
+
+task integrationTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'integration-test'
+    }
+}
+
+jacocoTestReport {
+    getExecutionData().setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+    reports.xml.enabled true
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['**WhatsappApplication.class'])
+        }))
+    }
+}
+
+pitest {
+    threads.set(2)
+    timestampedReports.set(false)
+    junit5PluginVersion.set('0.15')
+    targetClasses.set(['com.facu.whatsapp.domain.*'])
+    targetTests.set(['com.facu.whatsapp.domain.*'])
+    mutationThreshold.set(80)
+}

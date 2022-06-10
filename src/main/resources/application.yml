@@ -1,0 +1,40 @@
+# SERVER CONFIG
+server:
+  servlet.context-path: /whatsapp/api
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+    include: common
+
+  # DATABASE CONFIG
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${spring.datasource.database}
+    username: postgres
+    password: 1234
+    database: groups
+
+    hikari:
+      data-source-properties.stringtype: unspecified
+
+  messages.basename: messages
+
+  mvc.log-request-details: true
+
+mybatis:
+  type-aliases-package: com.whatsapp.core.adapters.outbound.model
+  mapper-locations: mybatis/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  type-handlers-package: com.whatsapp.core.common.mybatis.handlers
+
+logging:
+  level:
+    ROOT: INFO
+    web: DEBUG
+    tx: DEBUG
+    com.nubox: DEBUG
+
+
+
